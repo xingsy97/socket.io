@@ -3,7 +3,12 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  cors: {
+    origin:"https://socket-io-admin.scm.azurewebsites.net",
+    credentials: true
+  }
+});
 const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
@@ -18,6 +23,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 let numUsers = 0;
 
 io.on('connection', (socket) => {
+  console.log("new connection");
+  console.log("socket.handshake.headers = ", socket.handshake.headers);
+  console.log("socket.request.headers = ", socket.request.headers);
+
   let addedUser = false;
 
   // when the client emits 'new message', this listens and executes
